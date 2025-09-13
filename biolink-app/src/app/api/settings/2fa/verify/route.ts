@@ -13,9 +13,11 @@ export async function POST(request: Request) {
     const userId = (session.user as any).id;
     const { code } = await request.json();
 
-    // In a real app, you would use a library to verify the TOTP code
-    // against the user's secret.
-    // For this simulation, we'll accept a dummy code.
+    // --- Production 2FA Implementation Guide ---
+    // 1. Fetch the user's `twoFactorSecret` from the database.
+    // 2. Use otplib to verify the code:
+    //    `const isValid = authenticator.verify({ token: code, secret: user.twoFactorSecret });`
+    // 3. If `isValid` is true, proceed.
     if (code === '123456') {
         const updatedUser = await enableUserTwoFactor(userId);
         if (updatedUser) {

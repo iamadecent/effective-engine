@@ -12,14 +12,17 @@ export async function POST(request: Request) {
 
     const userId = (session.user as any).id;
 
-    // In a real app, you would use a library like `speakeasy` or `otplib`
-    // to generate a real TOTP secret.
+    // --- Production 2FA Implementation Guide ---
+    // 1. Install necessary libraries: `npm install otplib qrcode`
+    // 2. Import them: `import { authenticator } from 'otplib';` and `import QRCode from 'qrcode';`
+    // 3. Generate a real secret: `const secret = authenticator.generateSecret();`
     const dummySecret = `DUMMYSECRET${userId}${Date.now()}`.slice(0, 20);
 
     const updatedUser = await updateUserTwoFactorSecret(userId, dummySecret);
 
     if (updatedUser) {
-        // In a real app, you would also generate a QR code URL (otpauth:// URI)
+        // 4. Generate the otpauth URL: `const otpauth = authenticator.keyuri(session.user.email, 'Biolink', secret);`
+        // 5. Generate a QR code data URL: `const qrCodeUrl = await QRCode.toDataURL(otpauth);`
         const dummyQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=otpauth://totp/Biolink:${session.user.email}?secret=${dummySecret}&issuer=Biolink`;
         return NextResponse.json({ secret: dummySecret, qrCodeUrl: dummyQrCodeUrl });
     } else {

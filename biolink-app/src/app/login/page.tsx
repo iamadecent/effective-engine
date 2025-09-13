@@ -3,11 +3,12 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import TurnstileWidget from '../components/TurnstileWidget';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isCaptchaChecked, setIsCaptchaChecked] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -19,11 +20,11 @@ export default function LoginPage() {
       redirect: false,
       email,
       password,
-      captchaToken: 'dummy-token', // Sending a dummy token
+      captchaToken,
     });
 
     if (result?.ok) {
-      router.push('/profile'); // Redirect to a generic profile page for now
+      router.push('/');
     } else {
       setError(result?.error || 'Invalid credentials');
     }
@@ -42,12 +43,11 @@ export default function LoginPage() {
             <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
             <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full p-3 border border-gray-300 rounded-lg"/>
           </div>
-          <div className="flex items-center">
-            <input id="captcha" type="checkbox" checked={isCaptchaChecked} onChange={(e) => setIsCaptchaChecked(e.target.checked)} className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
-            <label htmlFor="captcha" className="ml-2 block text-sm text-gray-900">I am not a robot</label>
-          </div>
+
+          <TurnstileWidget onSuccess={setCaptchaToken} />
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button type="submit" disabled={!isCaptchaChecked} className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400">Login</button>
+          <button type="submit" disabled={!captchaToken} className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400">Login</button>
         </form>
       </div>
     </div>

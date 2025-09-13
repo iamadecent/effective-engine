@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const { email, password, username, captchaToken } = await request.json();
 
     // In a real app, you'd verify the captchaToken with the provider's API
-    if (captchaToken !== 'dummy-token') {
+    if (captchaToken !== 'dummy-turnstile-token') {
         return NextResponse.json({ message: 'CAPTCHA verification failed.' }, { status: 400 });
     }
 

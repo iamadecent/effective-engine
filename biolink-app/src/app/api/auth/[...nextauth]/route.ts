@@ -13,7 +13,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        if (credentials.captchaToken !== 'dummy-token') throw new Error('CAPTCHA verification failed.');
+        if (credentials.captchaToken !== 'dummy-turnstile-token') throw new Error('CAPTCHA verification failed.');
 
         const user = await findUserByEmail(credentials.email);
 

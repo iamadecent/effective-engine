@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/lib/validation';
+import TurnstileWidget from '../components/TurnstileWidget';
 
 // A component to show password requirements
 const PasswordRequirements = ({ password }: { password: string }) => {
@@ -37,7 +38,7 @@ export default function SignUpPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isCaptchaChecked, setIsCaptchaChecked] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -60,7 +61,7 @@ export default function SignUpPage() {
     const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password, captchaToken: 'dummy-token' }),
+      body: JSON.stringify({ username, email, password, captchaToken }),
     });
 
     if (res.ok) {
@@ -89,12 +90,11 @@ export default function SignUpPage() {
             <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} className="w-full p-3 border border-gray-300 rounded-lg"/>
             <PasswordRequirements password={password} />
           </div>
-          <div className="flex items-center">
-            <input id="captcha" type="checkbox" checked={isCaptchaChecked} onChange={(e) => setIsCaptchaChecked(e.target.checked)} className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
-            <label htmlFor="captcha" className="ml-2 block text-sm text-gray-900">I am not a robot</label>
-          </div>
+
+          <TurnstileWidget onSuccess={setCaptchaToken} />
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button type="submit" disabled={!isCaptchaChecked} className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400">Sign Up</button>
+          <button type="submit" disabled={!captchaToken} className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400">Sign Up</button>
         </form>
       </div>
     </div>

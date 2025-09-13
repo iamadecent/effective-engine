@@ -48,6 +48,12 @@ export default function ProfileDisplay({ profile }: { profile: any }) {
                     {currentProfile.isVerified && <VerifiedIcon />}
                     {currentProfile.isOG && <OGIcon />}
                 </div>
+                {/*
+                  XSS Protection Note:
+                  User-generated content (currentProfile.bio) is rendered as text content by React.
+                  This automatically escapes any HTML, preventing Cross-Site Scripting (XSS) attacks.
+                  We are not using `dangerouslySetInnerHTML`.
+                */}
                 <p className="text-gray-700 mt-2">{currentProfile.bio}</p>
 
                 {!currentProfile.is_premium && (
