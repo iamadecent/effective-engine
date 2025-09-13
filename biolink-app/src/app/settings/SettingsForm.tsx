@@ -104,6 +104,22 @@ export default function SettingsForm({ profile }: { profile: any }) {
                     {isSubmitting ? 'Saving...' : 'Save Changes'}
                 </button>
             </div>
+
+            <hr className="my-6" />
+
+            <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Two-Factor Authentication (2FA)</h2>
+                {profile.isTwoFactorEnabled ? (
+                    <p className="text-green-600">2FA is currently enabled.</p>
+                ) : (
+                    <div>
+                        <p className="text-sm text-gray-600">Enhance your account security by enabling 2FA.</p>
+                        <a href="/settings/2fa-setup" className="inline-block mt-2 text-sm text-indigo-600 hover:text-indigo-900">
+                            Enable 2FA
+                        </a>
+                    </div>
+                )}
+            </div>
         </form>
     );
 }

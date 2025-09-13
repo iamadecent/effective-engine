@@ -20,7 +20,7 @@ export default async function SettingsPage() {
     }
 
     return (
-        <div className="container mx-auto p-4 sm:p-6">
+        <div className="container mx-auto p-4 sm:p-6 fade-in">
             <h1 className="text-2xl font-bold mb-4">Settings</h1>
             <div className="p-6 bg-white rounded-lg shadow-md">
                 <SettingsForm profile={profile} />

@@ -38,7 +38,7 @@ export default function ProfileDisplay({ profile }: { profile: any }) {
 
     return (
         <div
-            className={`w-full max-w-lg p-8 rounded-lg shadow-md text-center ${premiumClass}`}
+            className={`w-full max-w-lg p-8 rounded-lg shadow-md text-center transition-transform duration-300 hover:scale-105 hover:shadow-xl ${premiumClass}`}
             style={profileStyle}
         >
             {/* Inner container for text content to ensure readability over background */}

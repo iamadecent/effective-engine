@@ -39,6 +39,9 @@ export async function createUser(email: string, password_hash: string, username:
     isAdmin: false,
     isVerified: false,
     isOG: isOG,
+    isTwoFactorEnabled: false,
+    twoFactorSecret: '',
+    twoFactorVerifiedAt: null,
   };
   db.users.push(newUser);
 
@@ -92,6 +95,40 @@ export async function updateUserVerificationStatus(userId: number, isVerified: b
         return { user: db.users[userIndex], profile: db.profiles[profileIndex] };
     }
 
+    return null;
+}
+
+export async function updateUser2FAVerificationTimestamp(userId: number) {
+    const db = await readDb();
+    const userIndex = db.users.findIndex((user: any) => user.id === userId);
+    if (userIndex !== -1) {
+        db.users[userIndex].twoFactorVerifiedAt = Date.now();
+        await writeDb(db);
+        return db.users[userIndex];
+    }
+    return null;
+}
+
+export async function enableUserTwoFactor(userId: number) {
+    const db = await readDb();
+    const userIndex = db.users.findIndex((user: any) => user.id === userId);
+    if (userIndex !== -1) {
+        db.users[userIndex].isTwoFactorEnabled = true;
+        await writeDb(db);
+        return db.users[userIndex];
+    }
+    return null;
+}
+
+export async function updateUserTwoFactorSecret(userId: number, secret: string) {
+    const db = await readDb();
+    const userIndex = db.users.findIndex((user: any) => user.id === userId);
+    if (userIndex !== -1) {
+        db.users[userIndex].twoFactorSecret = secret;
+        db.users[userIndex].isTwoFactorEnabled = false; // Ensure it's disabled until verified
+        await writeDb(db);
+        return db.users[userIndex];
+    }
     return null;
 }
 

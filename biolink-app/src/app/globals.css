@@ -11,6 +11,21 @@ body {
 }
 
 @layer utilities {
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .premium-profile-effect {
     @apply shadow-lg border-2 border-purple-500;
     animation: glow 2s ease-in-out infinite alternate;
