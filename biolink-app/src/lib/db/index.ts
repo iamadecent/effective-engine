@@ -1,0 +1,80 @@
+import { promises as fs } from 'fs';
+import path from 'path';
+
+const dbPath = path.join(process.cwd(), 'db.json');
+
+async function readDb() {
+  try {
+    const data = await fs.readFile(dbPath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    // If the file doesn't exist, return a default structure
+    return { users: [], profiles: [] };
+  }
+}
+
+async function writeDb(data: any) {
+  await fs.writeFile(dbPath, JSON.stringify(data, null, 2), 'utf-8');
+}
+
+export async function findUserByEmail(email: string) {
+  const db = await readDb();
+  return db.users.find((user: any) => user.email === email);
+}
+
+export async function findUserById(id: number) {
+    const db = await readDb();
+    return db.users.find((user: any) => user.id === id);
+}
+
+export async function createUser(email: string, password_hash: string, username: string) {
+  const db = await readDb();
+  const newUserId = db.users.length > 0 ? Math.max(...db.users.map((u: any) => u.id)) + 1 : 1;
+
+  const newUser = {
+    id: newUserId,
+    email,
+    password_hash,
+  };
+  db.users.push(newUser);
+
+  const newProfileId = db.profiles.length > 0 ? Math.max(...db.profiles.map((p: any) => p.id)) + 1 : 1;
+  const newProfile = {
+      id: newProfileId,
+      user_id: newUserId,
+      username,
+      bio: '',
+      is_premium: false
+  }
+  db.profiles.push(newProfile)
+
+  await writeDb(db);
+  return newUser;
+}
+
+export async function getProfileByUsername(username: string) {
+    const db = await readDb();
+    return db.profiles.find((profile: any) => profile.username.toLowerCase() === username.toLowerCase());
+}
+
+export async function updateProfilePremiumStatus(userId: number, is_premium: boolean) {
+    const db = await readDb();
+    const profileIndex = db.profiles.findIndex((profile: any) => profile.user_id === userId);
+    if (profileIndex !== -1) {
+        db.profiles[profileIndex].is_premium = is_premium;
+        await writeDb(db);
+        return db.profiles[profileIndex];
+    }
+    return null;
+}
+
+// Dummy password hashing functions since bcrypt installation failed
+export function hashPassword(password: string) {
+    console.warn('Warning: Using dummy password hashing. DO NOT USE IN PRODUCTION.');
+    return `hashed_${password}`;
+}
+
+export function comparePassword(password: string, hash: string) {
+    console.warn('Warning: Using dummy password comparison. DO NOT USE IN PRODUCTION.');
+    return `hashed_${password}` === hash;
+}
