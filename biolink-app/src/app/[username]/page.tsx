@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import { getProfileByUsername } from '@/lib/db';
-import UpgradeButton from './UpgradeButton'; // This will not work as the component is a client component
 import ProfileDisplay from './ProfileDisplay';
 
 // This is a server component that fetches data for a specific user profile.

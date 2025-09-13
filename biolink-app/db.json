@@ -3,12 +3,18 @@
     {
       "id": 1,
       "email": "jane@example.com",
-      "password_hash": "$2b$10$f.gJ.p5q.w3j.X8l.Y2Uu.j8K.p6o.X8l.Y2Uu.j8K.p6o.X8l.Y"
+      "password_hash": "$2b$10$f.gJ.p5q.w3j.X8l.Y2Uu.j8K.p6o.X8l.Y2Uu.j8K.p6o.X8l.Y",
+      "isAdmin": true,
+      "isVerified": true,
+      "isOG": true
     },
     {
       "id": 2,
       "email": "john@example.com",
-      "password_hash": "$2b$10$g.hK.q6r.x4k.Z9m.Z3Vv.k9L.q7p.Y9m.Z3Vv.k9L.q7p.Y9m.Z"
+      "password_hash": "$2b$10$g.hK.q6r.x4k.Z9m.Z3Vv.k9L.q7p.Y9m.Z3Vv.k9L.q7p.Y9m.Z",
+      "isAdmin": false,
+      "isVerified": false,
+      "isOG": true
     }
   ],
   "profiles": [
@@ -17,14 +23,22 @@
       "user_id": 1,
       "username": "janedoe",
       "bio": "This is a premium profile!",
-      "is_premium": true
+      "is_premium": true,
+      "theme_color": "#e9d5ff",
+      "background_image_url": "https://images.unsplash.com/photo-1519681393784-d120267933ba",
+      "isVerified": true,
+      "isOG": true
     },
     {
       "id": 2,
       "user_id": 2,
       "username": "johndoe",
       "bio": "Just a regular person.",
-      "is_premium": false
+      "is_premium": false,
+      "theme_color": "#ffffff",
+      "background_image_url": "",
+      "isVerified": false,
+      "isOG": true
     }
   ]
 }

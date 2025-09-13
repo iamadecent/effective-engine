@@ -30,11 +30,15 @@ export async function findUserById(id: number) {
 export async function createUser(email: string, password_hash: string, username: string) {
   const db = await readDb();
   const newUserId = db.users.length > 0 ? Math.max(...db.users.map((u: any) => u.id)) + 1 : 1;
+  const isOG = db.users.length < 1000;
 
   const newUser = {
     id: newUserId,
     email,
     password_hash,
+    isAdmin: false,
+    isVerified: false,
+    isOG: isOG,
   };
   db.users.push(newUser);
 
@@ -44,7 +48,11 @@ export async function createUser(email: string, password_hash: string, username:
       user_id: newUserId,
       username,
       bio: '',
-      is_premium: false
+      is_premium: false,
+      theme_color: '#ffffff',
+      background_image_url: '',
+      isVerified: false,
+      isOG: isOG,
   }
   db.profiles.push(newProfile)
 
@@ -60,6 +68,31 @@ export async function getProfileByUsername(username: string) {
 export async function getProfileByUserId(userId: number) {
     const db = await readDb();
     return db.profiles.find((profile: any) => profile.user_id === userId);
+}
+
+export async function getAllUsers() {
+    const db = await readDb();
+    return db.users;
+}
+
+export async function updateUserVerificationStatus(userId: number, isVerified: boolean) {
+    const db = await readDb();
+    const userIndex = db.users.findIndex((user: any) => user.id === userId);
+    const profileIndex = db.profiles.findIndex((profile: any) => profile.user_id === userId);
+
+    if (userIndex !== -1) {
+        db.users[userIndex].isVerified = isVerified;
+    }
+    if (profileIndex !== -1) {
+        db.profiles[profileIndex].isVerified = isVerified;
+    }
+
+    if (userIndex !== -1 || profileIndex !== -1) {
+        await writeDb(db);
+        return { user: db.users[userIndex], profile: db.profiles[profileIndex] };
+    }
+
+    return null;
 }
 
 export async function updateProfilePremiumStatus(userId: number, is_premium: boolean) {
