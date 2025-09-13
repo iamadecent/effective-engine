@@ -14,6 +14,18 @@ export default function SignUpPage() {
     e.preventDefault();
     setError('');
 
+    if (password.length < 8) {
+        setError('Password must be at least 8 characters long.');
+        return;
+    }
+
+    // Basic username validation (no special characters)
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(username)) {
+        setError('Username can only contain letters, numbers, and underscores.');
+        return;
+    }
+
     const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -29,7 +41,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center">Create an Account</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -46,6 +58,8 @@ export default function SignUpPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              pattern="^[a-zA-Z0-9_]+$"
+              title="Username can only contain letters, numbers, and underscores."
               className="w-full p-3 border border-gray-300 rounded-lg"
             />
           </div>
@@ -78,6 +92,7 @@ export default function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={8}
               className="w-full p-3 border border-gray-300 rounded-lg"
             />
           </div>

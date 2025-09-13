@@ -57,11 +57,28 @@ export async function getProfileByUsername(username: string) {
     return db.profiles.find((profile: any) => profile.username.toLowerCase() === username.toLowerCase());
 }
 
+export async function getProfileByUserId(userId: number) {
+    const db = await readDb();
+    return db.profiles.find((profile: any) => profile.user_id === userId);
+}
+
 export async function updateProfilePremiumStatus(userId: number, is_premium: boolean) {
     const db = await readDb();
     const profileIndex = db.profiles.findIndex((profile: any) => profile.user_id === userId);
     if (profileIndex !== -1) {
         db.profiles[profileIndex].is_premium = is_premium;
+        await writeDb(db);
+        return db.profiles[profileIndex];
+    }
+    return null;
+}
+
+export async function updateProfile(userId: number, data: { bio?: string; theme_color?: string; background_image_url?: string }) {
+    const db = await readDb();
+    const profileIndex = db.profiles.findIndex((profile: any) => profile.user_id === userId);
+    if (profileIndex !== -1) {
+        // Merge the new data with the existing profile
+        db.profiles[profileIndex] = { ...db.profiles[profileIndex], ...data };
         await writeDb(db);
         return db.profiles[profileIndex];
     }

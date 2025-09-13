@@ -12,7 +12,7 @@ export default async function ProfilePage({ params }: { params: { username:strin
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
       <ProfileDisplay profile={profile} />
     </div>
   );
