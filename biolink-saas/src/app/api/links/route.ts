@@ -10,6 +10,14 @@ export async function POST(request: Request) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
+        // const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+        // const linkCount = await prisma.link.count({ where: { userId: session.user.id } });
+
+        // // Example of feature gating: Free plan users can only have 5 links
+        // if (user?.plan === 'free' && linkCount >= 5) {
+        //     return new NextResponse('Upgrade to Pro to add more links.', { status: 402 }); // Payment Required
+        // }
+
         const { url, title } = await request.json();
 
         if (!url || !title || typeof url !== 'string' || typeof title !== 'string') {
@@ -21,7 +29,7 @@ export async function POST(request: Request) {
         //         userId: session.user.id,
         //         url: url,
         //         title: title,
-        //         orderIndex: 0, // Placeholder
+        //         orderIndex: linkCount,
         //     },
         // });
 

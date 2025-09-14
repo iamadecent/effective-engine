@@ -9,20 +9,41 @@ export async function GET(request: Request) {
         // if (!session || !session.user || !session.user.isAdmin) {
         //     return new NextResponse('Unauthorized', { status: 403 });
         // }
-        // Note: The session object needs to be configured to include the `isAdmin` role.
 
-        // const users = await prisma.user.findMany({
-        //     select: {
-        //         id: true,
-        //         email: true,
-        //         name: true,
-        //         plan: true,
-        //         isVerified: true,
-        //     },
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '10', 10);
+        const search = searchParams.get('search') || '';
+
+        const skip = (page - 1) * limit;
+
+        // const whereClause = search ? {
+        //     OR: [
+        //         { email: { contains: search, mode: 'insensitive' } },
+        //         { name: { contains: search, mode: 'insensitive' } },
+        //     ],
+        // } : {};
+
+        // const [users, total] = await prisma.$transaction([
+        //     prisma.user.findMany({
+        //         where: whereClause,
+        //         skip: skip,
+        //         take: limit,
+        //         select: { id: true, email: true, name: true, plan: true, isVerified: true },
+        //     }),
+        //     prisma.user.count({ where: whereClause }),
+        // ]);
+
+        // return NextResponse.json({
+        //     data: users,
+        //     meta: {
+        //         total,
+        //         page,
+        //         limit,
+        //         totalPages: Math.ceil(total / limit),
+        //     }
         // });
-
-        // return NextResponse.json(users);
-        return NextResponse.json([]); // Placeholder
+        return NextResponse.json({ data: [], meta: {} });
 
     } catch (error) {
         return new NextResponse('Internal Server Error', { status: 500 });

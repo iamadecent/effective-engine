@@ -1,20 +1,34 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/db';
+import ThemeEditor from './ThemeEditor';
 
-export default function DashboardSettingsPage() {
-    // This page would contain the ThemeEditor component and other
-    // settings related to the appearance of the user's public profile.
+export default async function DashboardSettingsPage() {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) redirect('/login');
+
+    // const theme = await prisma.theme.findUnique({
+    //     where: { userId: session.user.id },
+    // });
+
+    // if (!theme) {
+    //     // Handle case where theme doesn't exist, maybe create it?
+    //     return <div>Theme not found.</div>
+    // }
+
+    // Placeholder data
+    const theme = {
+        backgroundColor: '#ffffff',
+        backgroundImageUrl: '',
+        buttonStyle: 'rounded',
+        fontFamily: 'Inter',
+    };
 
     return (
         <div className="space-y-8">
             <h1 className="text-3xl font-bold">Theme & Appearance</h1>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Theme Editor</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p>Placeholder for the Theme Editor component.</p>
-                </CardContent>
-            </Card>
+            <ThemeEditor initialTheme={theme} />
         </div>
     );
 }
